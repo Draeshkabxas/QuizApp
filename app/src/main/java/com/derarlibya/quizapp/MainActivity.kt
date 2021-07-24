@@ -35,12 +35,14 @@ class MainActivity : AppCompatActivity() {
      * if them add one then start new activity and finish this activity.
      * if not it show toast Please enter your name. and do nothing else.
      */
-    fun onStartClicked(view: View){
+    private fun onStartClicked(view: View){
         if(binding.etName.text.isNullOrEmpty()){
             Toast.makeText(this,"Please enter your name.",Toast.LENGTH_SHORT).show()
             return
         }
         val intent=Intent(this,QuizQuestionsActivity::class.java)
+
+        intent.putExtra(Constants.USER_NAME,binding.etName.text.toString())
         startActivity(intent)
         finish()
     }

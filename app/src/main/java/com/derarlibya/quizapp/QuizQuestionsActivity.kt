@@ -1,6 +1,7 @@
 package com.derarlibya.quizapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -20,10 +21,16 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var currentQuestion: Int = 0
     private var questionsList: List<Question>? = null
     private var mSelectedOptionPosition: Int = 0
+    private var mCorrectAnswers:Int = 0
+    private var mUserName:String? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQuizQuestionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        mUserName=intent.getStringExtra(Constants.USER_NAME)
 
         questionsList = Constants.getQuestions()
 
@@ -61,7 +68,12 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 setSecondText(btnSubmit)
             }
             getString(R.string.finish) ->{
-                
+                val intent = Intent(this,ResultActivity::class.java)
+                intent.putExtra(Constants.USER_NAME,mUserName)
+                intent.putExtra(Constants.TOTAL_QUESTIONS,questionsList!!.size)
+                intent.putExtra(Constants.CORRECT_ANSWERS,mCorrectAnswers)
+                startActivity(intent)
+                finish()
             }
             else -> {
                 btnSubmit.text = getString(R.string.submit)
@@ -115,6 +127,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         val mQuestion = questionsList!![currentQuestion]
         if (mQuestion.answer == mSelectedOptionPosition) {
             setRightView(getOption(mSelectedOptionPosition - 1))
+            mCorrectAnswers++
         } else {
             setRightView(getOption(mQuestion.answer - 1))
             setWrongView(getOption(mSelectedOptionPosition - 1))
@@ -225,7 +238,6 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         for (i in 0 until options.size) {
             if (options[i] == p0) {
                 selectedOptionView(p0 as TextView, i + 1)
-                Log.i(this.localClassName, "Selected option is $i")
             }
         }
     }
