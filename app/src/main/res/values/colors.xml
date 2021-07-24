@@ -13,4 +13,6 @@
     <color name="primary_pink">#9013FE</color>
     <color name="primary_dark_pink">#6A1B9A</color>
     <color name="access_pink">#9013FE</color>
+    <color name="green">#76ff03</color>
+    <color name="red">#ff3d00</color>
 </resources>

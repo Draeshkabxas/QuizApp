@@ -69,7 +69,6 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="Libya"
-            android:onClick="onOptionClicked"
             android:textColor="@color/enter_name_tv_color"
             android:textSize="18sp" />
 
@@ -82,7 +81,6 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="Libya"
-            android:onClick="onOptionClicked"
             android:textColor="@color/enter_name_tv_color"
             android:textSize="18sp" />
 
@@ -95,7 +93,6 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="Libya"
-            android:onClick="onOptionClicked"
             android:textColor="@color/enter_name_tv_color"
             android:textSize="18sp" />
 
@@ -108,7 +105,6 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="Libya"
-            android:onClick="onOptionClicked"
             android:textColor="@color/enter_name_tv_color"
             android:textSize="18sp" />
 
@@ -119,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:padding="15dp"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:background="@color/primary_pink"

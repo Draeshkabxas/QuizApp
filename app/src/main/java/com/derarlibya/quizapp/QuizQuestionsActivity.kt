@@ -6,7 +6,9 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.derarlibya.quizapp.databinding.ActivityQuizQuestionsBinding
 
@@ -15,7 +17,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var options: MutableList<TextView>
     private lateinit var binding: ActivityQuizQuestionsBinding
 
-    private var currentQuestion: Int = 4
+    private var currentQuestion: Int = 0
     private var questionsList: List<Question>? = null
     private var mSelectedOptionPosition: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,16 +33,129 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
         setOptions()
 
-        setOptionsOnClickListener()
+        setOptionsOnClickListener(this)
+
+        binding.btnSubmit.setOnClickListener {
+            onSubmitClicked(it as Button)
+        }
     }
 
     /**
-     * This function set all options listener to be
-     * the listener of  this activity
+     * This function check btn_submit text
+     * if it is Submit call checkAnswer function
+     * for check if it correct answer and change option  color
+     * and call setOptionsOnClickListener to set for set all options listener to null
+     * and call setSecondText to change btn_submit text
+     *
+     * but if it is Finish start finish activity
+     * else reset the name to submit and call goToNextQuestion
+     *
+     *
+     * @param btnSubmit the button that do all that when user click it
      */
-    private fun setOptionsOnClickListener() {
+    private fun onSubmitClicked(btnSubmit: Button) {
+        when (btnSubmit.text) {
+            getString(R.string.submit) -> {
+                checkAnswer()
+                setOptionsOnClickListener(null)
+                setSecondText(btnSubmit)
+            }
+            getString(R.string.finish) ->{
+                
+            }
+            else -> {
+                btnSubmit.text = getString(R.string.submit)
+                goToNextQuestion()
+            }
+        }
+    }
+
+    /**
+     * This function change btn_submit text to finish if the game finish
+     * or go to next question if the game isn't finish yet
+     */
+    private fun setSecondText(btnSubmit: Button) {
+        if (!checkQuizFinish())
+            btnSubmit.text = getString(R.string.go_to_next)
+        else
+            btnSubmit.text = getString(R.string.finish)
+    }
+
+    /**
+     * This function move to the next question
+     * if the game isn't finish yet  I mean change  all  question information
+     * that showing to next question information
+     * if the game finish do nothing
+     */
+    private fun goToNextQuestion() {
+        if (!checkQuizFinish()) {
+            defaultOptionView()
+            setOptionsOnClickListener(this)
+            currentQuestion++
+            setQuestion()
+        }
+    }
+
+    /**
+     * This function check if the game is finish
+     * @return ture if there aren't questions left
+     * @return false if there are questions left
+     */
+    private fun checkQuizFinish():Boolean =
+        (currentQuestion >= questionsList!!.size - 1)
+
+
+    /**
+     * This function check if the answer is correct
+     * if it's change answer background textView color to green
+     * if not change correct answer background textView color to green
+     * and selected one to red
+     */
+    private fun checkAnswer() {
+        val mQuestion = questionsList!![currentQuestion]
+        if (mQuestion.answer == mSelectedOptionPosition) {
+            setRightView(getOption(mSelectedOptionPosition - 1))
+        } else {
+            setRightView(getOption(mQuestion.answer - 1))
+            setWrongView(getOption(mSelectedOptionPosition - 1))
+        }
+    }
+
+    /**
+     * Set red color background to passed TextView
+     * @param tv the TextView that will change it's background to red
+     */
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setWrongView(tv: TextView) {
+        tv.background =
+            getDrawable(R.drawable.wrong_option_border_bg)
+    }
+
+    /**
+     * Set green color background to passed TextView
+     * @param tv the TextView that will change it's background to green
+     */
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setRightView(tv: TextView) {
+        tv.background =
+            getDrawable(R.drawable.correct_option_border_bg)
+    }
+
+
+    /**
+     * this function get the option of the index passed
+     * @param index the index of the option you need
+     */
+    private fun getOption(index: Int): TextView = options[index]
+
+    /**
+     * This function set all options listener to be
+     * the parameter listener
+     * @param listener is the listener the will be set to all options
+     */
+    private fun setOptionsOnClickListener(listener: View.OnClickListener?) {
         options.forEach { options ->
-            options.setOnClickListener(this)
+            options.setOnClickListener(listener)
         }
     }
 
@@ -119,8 +234,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
      * This method make option like selected
      */
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun selectedOptionView(tv: TextView
-                                   , selectedOptionNum: Int) {
+    private fun selectedOptionView(
+        tv: TextView, selectedOptionNum: Int
+    ) {
         defaultOptionView()
         mSelectedOptionPosition = selectedOptionNum
         tv.background = getDrawable(R.drawable.select_option_border_bg)
